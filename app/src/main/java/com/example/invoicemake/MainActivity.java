@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.Manifest;
 import android.os.Bundle;
 import android.os.Environment;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -27,16 +26,16 @@ import com.karumi.dexter.listener.PermissionGrantedResponse;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.single.PermissionListener;
 
-import java.io.File;
+
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
-import java.util.jar.Attributes;
 
 public class MainActivity extends AppCompatActivity {
     Button btn;
-    EditText name;
+    EditText name,price,quantity,total;
+    String sname,sprice,squantity,stotal;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,9 +44,21 @@ public class MainActivity extends AppCompatActivity {
 
         btn =findViewById(R.id.IdButton);
 
+        name =findViewById(R.id.IdName);
+        price =findViewById(R.id.IdPrice);
+        quantity =findViewById(R.id.IdQuantity);
+        total =findViewById(R.id.IdTotal);
+
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                sname = name.getText().toString().trim();
+                sprice = price.getText().toString().trim();
+                stotal = total.getText().toString().trim();
+                squantity = quantity.getText().toString().trim();
+
+
                 Start();
             }
         });
@@ -90,44 +101,54 @@ public class MainActivity extends AppCompatActivity {
 
             Document document = new Document(PageSize.A4);
 
-            PdfPTable table = new PdfPTable(new float[]{3,3,3,3,3});
-
-            table.getDefaultCell().setHorizontalAlignment(Element.ALIGN_CENTER);
-            table.getDefaultCell().setFixedHeight(50);
-            table.setTotalWidth(PageSize.A4.getWidth());
-            table.setWidthPercentage(100);
-
-            table.getDefaultCell().setVerticalAlignment(Element.ALIGN_MIDDLE);
-            table.addCell("Name");
-            table.addCell("price");
-            table.addCell("address");
-            table.addCell("location");
-            table.addCell("ok");
-
-            table.setHeaderRows(1);
-
-            PdfPCell[] cell = table.getRow(0).getCells();
-
-            cell[0].setBackgroundColor(BaseColor.GRAY);
-            table.addCell("heloo");
-
-
-
-
-            PdfWriter.getInstance(document, new FileOutputStream(mFilePath));
+            PdfWriter.getInstance(document,new FileOutputStream(mFilePath));
 
             document.open();
 
-            document.add(new Paragraph("AHMED NAFIU NOMAN"));
-            Log.d("ok","nnnnnnn");
+            Paragraph intro = new Paragraph("ROBO TECH VALLEY ");
+            intro.setAlignment(Element.ALIGN_CENTER);
+            Paragraph space = new Paragraph("\n");
+
+//            PdfPTable table = new PdfPTable(4);
+
+            PdfPTable table = new PdfPTable(new float[]{6,2,2,4});
+
+            table.setWidthPercentage(100);
+
+            PdfPCell c1 = new PdfPCell(new Paragraph("Product Name"));
+            PdfPCell c2 = new PdfPCell(new Paragraph("Per price"));
+            PdfPCell c3 = new PdfPCell(new Paragraph("Quantity"));
+            PdfPCell c4 = new PdfPCell(new Paragraph("Total"));
+
+            c1.setBackgroundColor(BaseColor.GRAY);
+            c2.setBackgroundColor(BaseColor.GRAY);
+            c3.setBackgroundColor(BaseColor.GRAY);
+            c4.setBackgroundColor(BaseColor.ORANGE);
+
+
+            table.addCell(c1);
+            table.addCell(c2);
+            table.addCell(c3);
+            table.addCell(c4);
+
+            c1 = new PdfPCell(new Paragraph("Robot"));
+            c2 = new PdfPCell(new Paragraph("150"));
+            c3 = new PdfPCell(new Paragraph("2"));
+            c4 = new PdfPCell(new Paragraph("300"));
+
+            table.addCell(c1);
+            table.addCell(c2);
+            table.addCell(c3);
+            table.addCell(c4);
+
+
+            document.add(intro);
+            document.add(space);
             document.add(table);
 
-            Log.d("ok","nisni");
-
-
-
-
             document.close();
+
+
 
             Toast.makeText(this, ""+mFilePath+"is done", Toast.LENGTH_SHORT).show();
 
